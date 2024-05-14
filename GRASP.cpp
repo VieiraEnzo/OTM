@@ -6,6 +6,17 @@
 #include <utility>
 using namespace std;
 
+int GRASP(int alfa){
+    int LucroMax = 0;
+
+    do{
+        
+        
+    }while (true);
+    
+    return LucroMax;
+}
+
 
 int main(){
     string name = "./dckp_instances/500/dckp_1_sum.txt";
@@ -14,5 +25,4 @@ int main(){
     vector<pair<int,int>> ForfeitPairs;
     read_file(name , nI, nP, C, profits, wheights, ForfeitPairs);
 
-    cout << nI << endl;
 }
