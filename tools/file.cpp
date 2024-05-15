@@ -1,8 +1,8 @@
 #include "file.h"
+#include "item.h"
 
 void read_file(std::string name, int &nI, int &nP, int &C, 
-               std::vector<int> &profits, std::vector<int> &wheights,
-               std::vector<std::pair<int,int>> &ForfeitPairs) {
+               std::vector<item> items) {
     // Your function implementation here
     // Opening file
     std::ifstream myfile;
@@ -14,16 +14,15 @@ void read_file(std::string name, int &nI, int &nP, int &C,
     }
 
     myfile >> nI >> nP >> C;
-    profits.resize(nI);
-    wheights.resize(nI);
-    ForfeitPairs.resize(nP);
+    items.resize(nI);
 
-    for(int i = 0; i < nI; i++) myfile >> profits[i];
-    for(int i = 0; i < nI; i++) myfile >> wheights[i];
+    for(int i = 0; i < nI; i++) myfile >> items[i].value;
+    for(int i = 0; i < nI; i++) myfile >> items[i].wheight;
     
     for(int i = 0; i < nP; i++){
         int a,b; myfile >> a >> b;
-        ForfeitPairs[i] = {a,b};
+        items[a].forbiten[b] = true; 
+        items[b].forbiten[a] = true;
     }
 
     myfile.close();

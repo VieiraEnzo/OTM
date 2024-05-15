@@ -1,6 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "item.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,7 +10,6 @@
 
 // Function declaration
 void read_file(std::string name, int &nI, int &nP, int &C, 
-               std::vector<int> &profits, std::vector<int> &wheights,
-               std::vector<std::pair<int,int>> &ForfeitPairs);
+               std::vector<item> items);
 
 #endif
