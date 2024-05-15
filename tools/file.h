@@ -10,6 +10,6 @@
 
 // Function declaration
 void read_file(std::string name, int &nI, int &nP, int &C, 
-               std::vector<item> items);
+               std::vector<item> &items);
 
 #endif

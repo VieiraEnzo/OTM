@@ -1,5 +1,4 @@
 #include "./tools/file.h"
-#include "./tools/item.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -10,17 +9,20 @@
 #include <set>
 using namespace std;
 
-// struct item
-// {
-//     int value;
-//     int wheight;
-//     set<int> forbiten;
-// };
-
-
 int nI, nP, nC;
 vector<item> items;
 vector<pair<double,int>> SortedPairs;
+
+//Retorna o Lucro total de uma solução
+int profit(vector<bool> &sol){
+    int ans = 0;
+    for(int i = 0; i < nI; i++){
+        if(sol[i]){
+            ans += items[i].value;
+        }
+    }
+    return ans;
+}
 
 //Retorna se existe algum que i é proibido com
 bool Forbitten(int i, vector<int> chosen){
@@ -32,12 +34,21 @@ bool Forbitten(int i, vector<int> chosen){
     return false;
 }
 
+//Cria SortedPairs e os organiza do mais valiozo para o menos
+void buildSortedPairs(){
+    for(int i = 0; i < nI ; i++){
+        SortedPairs.push_back({(double)items[i].value/(double)items[i].wheight, i});
+    }
+    sort(SortedPairs.rbegin(), SortedPairs.rend());
+}
+
+//Algoritmo construtivo O(nlog), atualmente sem fila bonitinha
 vector<bool> constructive(int alfa){
     int peso = 0;
     vector<int> chosen;
     for(int i = 0; i < nI; i++){
         int it = SortedPairs[i].second;
-        if(peso < nC && !Forbitten(it, chosen)){
+        if(peso + items[it].wheight <= nC && !Forbitten(it, chosen)){
             peso += items[it].wheight;
             chosen.push_back(it);
         }
@@ -49,26 +60,36 @@ vector<bool> constructive(int alfa){
     return ans;
 }
 
-int localSearch(vector<bool> &s1){
-    return 1;
+//Checa a Vizinhança e retorna o melhor
+int checkNeighbors(){
+    for(int i = 0; i < nI; i++){
+        
+    }
+    return 3;
 }
 
-//Cria SortedPairs e os organiza do mais valiozo para o menos
-void buildSortedPairs(){
-    for(int i = 0; i < nI ; i++){
-        SortedPairs.push_back({(double)items[i].value/(double)items[i].wheight, i});
+//Retorna o Máximo local da solução
+int localSearch(vector<bool> &sol){
+
+    int smax = -1, sit = 0;
+    while(smax < sit){
+        smax = max(sit, smax);
+        sit = checkNeighbors();
     }
-    sort(SortedPairs.rbegin(), SortedPairs.rend());
+
+    return smax;
 }
+
+
 
 int GRASP(int alfa, int maxIt){
     int LucroMax = 0;
     buildSortedPairs();
-
     for(int i = 0; i < maxIt; i++){
         vector<bool> s1 = constructive(alfa);
         int sol = localSearch(s1);
         LucroMax = max(LucroMax, sol);
+        printf("Iretation %d: LucroMax = %d\n", i+1, LucroMax);
     }
     
     return LucroMax;
@@ -79,7 +100,11 @@ int main(){
     string name = "./dckp_instances/500/dckp_1_sum.txt";
     double alfa = 0.75;
 
-    read_file(name , nI, nP, C, items);
-    GRASP(alfa, 100);
+    printf("Reading files...\n");
+    read_file(name , nI, nP, nC, items);
+    printf("Files read\n");
+
+    printf("Running GRASP\n");
+    GRASP(alfa, 10);
 
 }
