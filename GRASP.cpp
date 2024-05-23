@@ -7,32 +7,21 @@
 #include <bitset>
 #include <algorithm>
 #include <set>
+#define BIT bitset<1000>
 using namespace std;
 
 int nI, nP, nC;
 vector<item> items;
 vector<pair<double,int>> SortedPairs;
 
-//Retorna o Lucro total de uma solução
-int profit(vector<bool> &sol){
-    int ans = 0;
-    for(int i = 0; i < nI; i++){
-        if(sol[i]){
-            ans += items[i].value;
-        }
-    }
-    return ans;
-}
 
-//Retorna se existe algum que i é proibido com
-bool Forbitten(int i, vector<int> chosen){
-    for(int it : chosen){
-        if(items[i].forbiten[it]){
-            return true;
-        }
-    }
-    return false;
-}
+struct Mochila
+{
+    BIT s{0};
+    int peso = 0, lucro = 0;
+};
+
+
 
 //Cria SortedPairs e os organiza do mais valiozo para o menos
 void buildSortedPairs(){
@@ -43,38 +32,49 @@ void buildSortedPairs(){
 }
 
 //Algoritmo construtivo O(nlog), atualmente sem fila bonitinha
-vector<bool> constructive(int alfa){
-    int peso = 0;
-    vector<int> chosen;
+void constructive(int alfa, Mochila &mochila){
+    
     for(int i = 0; i < nI; i++){
         int it = SortedPairs[i].second;
-        if(peso + items[it].wheight <= nC && !Forbitten(it, chosen)){
-            peso += items[it].wheight;
-            chosen.push_back(it);
+        if(mochila.peso + items[it].wheight <= nC && items[it].canChoose(mochila.s)){
+            mochila.peso += items[it].wheight;
+            mochila.lucro += items[it].value;
+            mochila.s[it] = 1;
         }
     }
-
-    vector<bool> ans(nI, false);
-    for(int it : chosen) ans[it] = true;
-
-    return ans;
 }
 
-//Checa a Vizinhança e retorna o melhor
-int checkNeighbors(){
-    for(int i = 0; i < nI; i++){
-        
+//Checa a Vizinhança e retorna o melhor e muda a solução
+void checkNeighbors(Mochila &mochila){
+
+    int melhor = 0;
+    pair<int,int> par = {0,0};
+    for(int i = 0; i < nI; i++){ //saindo
+        if(!mochila.s[i]) continue;
+        for(int j = 0; j < nI; j++){ //entrando
+            if(mochila.s[j]) continue;
+            if(mochila.peso - items[i].wheight + items[j].wheight > nC) continue;
+            mochila.s[i] = 0; if(!items[j].canChoose(mochila.s)){mochila.s[i] = 1;continue;}
+            mochila.s[i] = 1;
+            if(-items[i].value + items[j].value < melhor)continue;
+            melhor = -items[i].value + items[j].value;
+            par = {i,j};
+        }
     }
-    return 3;
+    mochila.s[par.first] = !mochila.s[par.first]; mochila.s[par.second] = !mochila.s[par.second];
+    mochila.lucro += melhor;
 }
 
 //Retorna o Máximo local da solução
-int localSearch(vector<bool> &sol){
+int localSearch(Mochila &mochila){
 
+    int i = 0;
     int smax = -1, sit = 0;
     while(smax < sit){
         smax = max(sit, smax);
-        sit = checkNeighbors();
+        checkNeighbors(mochila);
+        sit = mochila.lucro;
+        cout << i++ << ": "<< sit << "\n";
     }
 
     return smax;
@@ -82,18 +82,20 @@ int localSearch(vector<bool> &sol){
 
 
 
-int GRASP(int alfa, int maxIt){
+int GRASP(double alfa, int maxIt){
     int LucroMax = 0;
+    Mochila mochila;
     buildSortedPairs();
     for(int i = 0; i < maxIt; i++){
-        vector<bool> s1 = constructive(alfa);
-        int sol = localSearch(s1);
+        constructive(alfa, mochila);
+        int sol = localSearch(mochila);
         LucroMax = max(LucroMax, sol);
-        printf("Iretation %d: LucroMax = %d\n", i+1, LucroMax);
+        printf("Iretation %d: LucroMax = %d\n", i+1, sol);
     }
     
     return LucroMax;
 }
+
 
 
 int main(){
@@ -105,6 +107,6 @@ int main(){
     printf("Files read\n");
 
     printf("Running GRASP\n");
-    GRASP(alfa, 10);
+    GRASP(alfa, 1);
 
 }

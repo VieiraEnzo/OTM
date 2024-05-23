@@ -3,23 +3,19 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <bitset>
 #include <algorithm>
+#include <bitset>
 #include <set>
+#define BIT bitset<1000>
 using namespace std;
 
 struct item
 {
     int value;
     int wheight;
-    vector<bool> forbiten;
+    BIT forbidden;
 
-    bool canChoose(vector<bool> sol){
-        for(int i = 0; i < sol.size(); i++){
-            if(forbiten[i] && sol[i]){
-                return false;
-            }
-        }
-        return true;
+    bool canChoose(BIT sol){
+        return (forbidden & sol) == 0;
     }
 };
