@@ -25,3 +25,4 @@ void read_file(std::string name, int &nI, int &nP, int &C,
 
     myfile.close();
 }
+

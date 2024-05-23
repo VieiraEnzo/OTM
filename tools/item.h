@@ -15,7 +15,13 @@ struct item
     int wheight;
     BIT forbidden;
 
-    bool canChoose(BIT sol){
+    bool Compativel(BIT sol){
         return (forbidden & sol) == 0;
     }
+};
+
+struct Mochila
+{
+    BIT s{0};
+    int peso = 0, lucro = 0;
 };
