@@ -7,60 +7,45 @@
 #include <bitset>
 #include <algorithm>
 #include <set>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+
 #define BIT bitset<1000>
+
+typedef long long ll;
+
+using namespace __gnu_pbds;
+using ordered_set = tree<pair<double,int>, null_type, less<pair<double,int>>, rb_tree_tag, tree_order_statistics_node_update>;
+using ordered_multiset = tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>;
+
 using namespace std;
 
-int num;
 int nI, nP, nC;
 vector<item> items;
 vector<pair<double,int>> SortedPairs;
 
 struct LCR
 {   
-    //HMAX VAI DAR MERDA!!!!
-    //SE REMOVER TEM QUE ATUALIZAR
-    //
-    //Problema: se existir um gap, e a aleatoriedade permitir, é possivel que hmin nn seja grande o 
-    // suficiente para atualizar ci <= hamax + alfa*(hmin- hmax)
-    int r = 0;
+    int inf = 1e9;
     double hmin, hmax, alfa;
-    set<pair<double,int>> elementos;
+    ordered_set elementos;
+    
 
     LCR (double alfa) : alfa(alfa){
 
-        hmin = SortedPairs[0].first;
-        hmax = SortedPairs[SortedPairs.size()-1].first;
-        for(r; r < nI; r++) {
-            if(SortedPairs[r].first <= hmax + alfa * (hmin - hmax)){
-                elementos.insert(SortedPairs[r]);
-            }else{break;}
-        }
+        for(int i = 0; i < nI; i++) elementos.insert(SortedPairs[i]);
     }
 
     int get_element(){
-        cout << elementos.size() << " " << nI << " " << r << " " << hmin << "\n";
-        auto it = elementos.begin();
-        int rp = rand() % elementos.size();
-        advance(it,rp);
-        auto removido = *it;
-        elementos.erase(it);
         hmin = (*elementos.begin()).first;
-        atualizarLCR();
-        return removido.second;
+        hmax = (*prev(elementos.end())).first;
+        int nb = elementos.order_of_key({hmax + alfa * (hmin - hmax), inf});
+        int rp = rand() % nb;
+        auto it = elementos.find_by_order(rp);
+        int IndRem = (*it).second;
+        elementos.erase(it);   
+        return IndRem;
     }
-
-    void atualizarLCR(){
-        for(; r < nI; r++){
-            if(SortedPairs[r].first <= hmax + alfa * (hmin - hmax)){
-                elementos.insert(SortedPairs[r]);
-            }else{break;}
-        }
-    }
-
-    //Precisa, saber o menor elemento
-    //Sabendo o menor, atualizar o LCR com os novos elementos
-    //Escolher um elemento aleatório
-    //Tirar elemento aleatório
 
 };
 
@@ -127,13 +112,10 @@ int localSearch(Mochila &mochila){
 
 int GRASP(double alfa, int maxIt){
     int LucroMax = 0;
-    Mochila mochila;
     buildSortedPairs();
     for(int i = 0; i < maxIt; i++){
-        num++;
-        cout << "constuctive: " << num << "\n";
+        Mochila mochila;
         constructive(alfa, mochila);
-        cout << "Local: " << num << "\n";
         int sol = localSearch(mochila);
         LucroMax = max(LucroMax, sol);
         printf("Iretation %d: LucroMax = %d\n", i+1, sol);
