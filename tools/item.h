@@ -22,6 +22,6 @@ struct item
 
 struct Mochila
 {
+    int lucro = 0, peso = 0;
     BIT s{0};
-    int peso = 0, lucro = 0;
 };
