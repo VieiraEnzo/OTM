@@ -59,7 +59,7 @@ void buildSortedPairs(){
 
 //Algoritmo construtivo O(nlog), atualmente sem fila bonitinha
 void constructive(double alfa, Mochila &mochila){
-
+    //Modificar a razão
     LCR lcr(alfa);
 
     for(int i = 0; i < nI; i++){

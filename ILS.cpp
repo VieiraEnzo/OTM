@@ -60,16 +60,25 @@ int localSearch(Mochila &mochila){
 
 //Faz um Pertubação Aleatória na solução
 void Pertubation(Mochila &Mochila){
-
+    //Gera uma lista de caras que podem entrar
+    // se estiver vazia tiramos um aleatorio
+    // se não, escolhemos aleatoriamente para colocar ou botar
 }
 
 //Decide se a solução nova vai ser aceita ou não,
 //deve balancear diversidade com otimalidade
 Mochila CriterioAceitacao(Mochila &mochila, Mochila &nova){
-    return {};
+    //Resolver a mochila fracionaria
+    // e usar o resultado (razao do lucro atual com o da fracionaria) como probabilidade
+    // para pegar a solução
 }
 //Retorna uma solução construtiva do problema
 void construtivo(Mochila Mochila){
+    //Para cada dupla, testar com base no guloso básico
+    //qual tem a melhor mochila. Com isso fixamos esses 2 elementos, e
+    //resolvemos para o subconjunto sem eles.
+    // Testar primeiro o de um elemento só em vez de dupla.
+
 }
 
 

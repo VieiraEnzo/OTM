@@ -37,6 +37,7 @@ bool IsTabu(Mochila &mochila, int i, int j){
 void checkNeighbors(Mochila &mochila){
 
     int melhor = 0;
+    if(IsTabu(mochila, 0 ,0)) melhor = -1e9;
     pair<int,int> par = {0,0};
     for(int i = 0; i < nI; i++){ //saindo
         if(!mochila.s[i]) continue;
@@ -46,7 +47,7 @@ void checkNeighbors(Mochila &mochila){
             mochila.s[i] = 0; if(!items[j].Compativel(mochila.s)){mochila.s[i] = 1;continue;} //Se item não for compatível
             mochila.s[i] = 1;
             if(-items[i].value + items[j].value < melhor)continue;  //Se a solução Aumenta o valor da mochila
-            if(IsTabu(mochila, i , j)) {continue;}
+            if(IsTabu(mochila, i , j)) {continue;} //Se estiver na tabuList 
             melhor = -items[i].value + items[j].value; //Atualiza o melhor valor
             par = {i,j};
         }
@@ -69,18 +70,13 @@ int localSearch(Mochila &mochila){
     return smax;
 }
 
-//Faz um Pertubação Aleatória na solução
-void Pertubation(Mochila &Mochila){
-
-}
-
-//Decide se a solução nova vai ser aceita ou não,
-//deve balancear diversidade com otimalidade
-Mochila CriterioAceitacao(Mochila &mochila, Mochila &nova){
-    return {};
-}
 //Retorna uma solução construtiva do problema
 void construtivo(Mochila Mochila){
+    //Para cada dupla, testar com base no guloso básico
+    //qual tem a melhor mochila. Com isso fixamos esses 2 elementos, e
+    //resolvemos para o subconjunto sem eles.
+    // Testar primeiro o de um elemento só em vez de dupla.
+
 }
 
 void Tabu(int itMax, int maxTabuSize){
