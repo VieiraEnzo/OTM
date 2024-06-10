@@ -114,13 +114,12 @@ int localSearch(Mochila &mochila){
 int GRASP(double alfa, int maxIt){
     int LucroMax = 0;
     SortedPairs.clear();
-    buildSortedPairs();
+    buildSortedPairs();  //O(nlog)
     for(int i = 0; i < maxIt; i++){
         Mochila mochila;
-        constructive(alfa, mochila);
-        int sol = localSearch(mochila);
+        constructive(alfa, mochila); //O(nlog)
+        int sol = localSearch(mochila); //O(n^2 * ?)
         LucroMax = max(LucroMax, sol);
-        // printf("Iretation %d: LucroMax = %d\n", i+1, sol);
     }
     
     return LucroMax;
@@ -130,17 +129,20 @@ int GRASP(double alfa, int maxIt){
 
 
 
-int main(){
-    string name = "./dckp_instances/500/";
+int main(int argc, char **argv){
+
+    if(argc < 2){ cout << "Argumentos não suficientes\n";}
+    string TamInst = argv[1];
+    string name = "./dckp_instances/" + TamInst + "/";
     string instB = "dckp_", instE = "_sum.txt";
     double alfa = 0.75;
     srand (time(NULL));
-    
+
 
     for(int i = 1; i <= 10; i++){
 
         string arq_inp = name + instB + to_string(i) + instE; 
-        string arq_out = "./results/500/dckp_" + to_string(i) + "_result.txt"; 
+        string arq_out = "./results/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
 
         printf("Reading files...\n");
         read_file(arq_inp, nI, nP, nC, items);
