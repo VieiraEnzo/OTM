@@ -1,10 +1,12 @@
 #include "./tools/file.h"
+#include "./tools/statistics.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <utility>
 #include <bitset>
+#include <chrono>
 #include <algorithm>
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
@@ -111,13 +113,14 @@ int localSearch(Mochila &mochila){
 
 int GRASP(double alfa, int maxIt){
     int LucroMax = 0;
+    SortedPairs.clear();
     buildSortedPairs();
     for(int i = 0; i < maxIt; i++){
         Mochila mochila;
         constructive(alfa, mochila);
         int sol = localSearch(mochila);
         LucroMax = max(LucroMax, sol);
-        printf("Iretation %d: LucroMax = %d\n", i+1, sol);
+        // printf("Iretation %d: LucroMax = %d\n", i+1, sol);
     }
     
     return LucroMax;
@@ -125,17 +128,40 @@ int GRASP(double alfa, int maxIt){
 
 
 
+
+
 int main(){
-    string name = "./dckp_instances/500/dckp_1_sum.txt";
+    string name = "./dckp_instances/500/";
+    string instB = "dckp_", instE = "_sum.txt";
     double alfa = 0.75;
     srand (time(NULL));
     
 
-    printf("Reading files...\n");
-    read_file(name , nI, nP, nC, items);
-    printf("Files read\n");
+    for(int i = 1; i <= 10; i++){
 
-    printf("Running GRASP\n");
-    GRASP(alfa, 100);
+        string arq_inp = name + instB + to_string(i) + instE; 
+        string arq_out = "./results/500/dckp_" + to_string(i) + "_result.txt"; 
+
+        printf("Reading files...\n");
+        read_file(arq_inp, nI, nP, nC, items);
+        printf("Files read\n");
+
+        printf("Running GRASP\n");
+
+        vector<double> solucoes, tempos;
+        for(int i = 0; i < 30; i++){
+            auto start = std::chrono::high_resolution_clock::now();
+            int sol = GRASP(alfa, 100);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            double execution_time = elapsed.count();
+            solucoes.push_back(sol);
+            tempos.push_back(execution_time);
+            printf("Iretation %d", i);
+        }
+
+        write_solutions(solucoes, tempos, arq_out);
+        
+    }
 
 }

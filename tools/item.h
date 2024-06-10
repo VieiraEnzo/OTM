@@ -24,4 +24,16 @@ struct Mochila
 {
     int lucro = 0, peso = 0;
     BIT s{0};
+
+    void remove_element(int i, int lucroE, int pesoE){
+        s[i] = 0;
+        lucro -= lucroE;
+        peso -= pesoE;
+    }
+
+    void insert_element(int i, int lucroE, int pesoE){
+        s[i] = 1;
+        lucro += lucroE;
+        peso += pesoE;
+    }
 };

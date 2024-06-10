@@ -22,6 +22,34 @@ using namespace std;
 
 int nI, nP, nC;
 vector<item> items;
+vector<pair<double,int>> SortedPairs;
+
+void buildSortedPairs(){
+    for(int i = 0; i < nI ; i++){
+        SortedPairs.push_back({(double)items[i].value/(double)items[i].wheight, i});
+    }
+    sort(SortedPairs.rbegin(), SortedPairs.rend());
+}
+
+//Resolve o problema da mochila Fracionaria
+int Resolve_Fracionaria(){
+    buildSortedPairs();
+    int cap = nC, lucro = 0;
+    for(auto a : SortedPairs){
+        int i  = a.second;
+        if(cap <= 0) break;
+        if(items[i].wheight >= cap){
+            lucro += items[i].value;
+            cap -= items[i].wheight;
+        }else{
+            lucro += a.first * (double)cap;
+            cap = 0;
+        }
+    }
+    return lucro;
+}
+
+
 
 //Checa a Vizinhança e retorna o melhor e muda a solução
 void checkNeighbors(Mochila &mochila){
@@ -59,10 +87,42 @@ int localSearch(Mochila &mochila){
 }
 
 //Faz um Pertubação Aleatória na solução
-void Pertubation(Mochila &Mochila){
+void Pertubation(Mochila &mochila){
     //Gera uma lista de caras que podem entrar
     // se estiver vazia tiramos um aleatorio
     // se não, escolhemos aleatoriamente para colocar ou botar
+    vector<int> PodemEntrar;
+    vector<int> PodemSair;
+    for(int i = 0; i < nI; i++){
+        if(mochila.s[i] == 1) {PodemSair.push_back(i); continue;}
+        if( mochila.peso + items[i].wheight <= nC && items[i].Compativel(mochila.s) ){ PodemEntrar.push_back(i);}
+    }
+
+    int operação = rand()%2;
+
+    if(PodemEntrar.size() == 0){
+        int rp = rand() % PodemSair.size();
+        int elem = PodemSair[rp];
+        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+        return;
+    }
+    if(PodemSair.size() == 0){
+        int rp = rand() % PodemEntrar.size();
+        int elem = PodemEntrar[rp];
+        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
+        return;
+    }
+
+    if(operação){
+        int rp = rand() % PodemSair.size();
+        int elem = PodemSair[rp];
+        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+    }else{
+        int rp = rand() % PodemEntrar.size();
+        int elem = PodemEntrar[rp];
+        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
+    }
+
 }
 
 //Decide se a solução nova vai ser aceita ou não,
@@ -71,6 +131,14 @@ Mochila CriterioAceitacao(Mochila &mochila, Mochila &nova){
     //Resolver a mochila fracionaria
     // e usar o resultado (razao do lucro atual com o da fracionaria) como probabilidade
     // para pegar a solução
+    int lucroFrac =  Resolve_Fracionaria();
+    int rp = rand() % lucroFrac;
+    if(nova.lucro <= rp){
+        return nova;
+    }else{
+        return mochila;
+    }
+
 }
 //Retorna uma solução construtiva do problema
 void construtivo(Mochila Mochila){
