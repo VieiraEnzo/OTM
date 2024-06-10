@@ -157,7 +157,7 @@ int main(){
             double execution_time = elapsed.count();
             solucoes.push_back(sol);
             tempos.push_back(execution_time);
-            printf("Iretation %d", i);
+            printf("Iretation %d\n", i);
         }
 
         write_solutions(solucoes, tempos, arq_out);
