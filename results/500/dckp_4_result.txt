@@ -1,20 +1,5 @@
-Melhor Solução: 928
-Média das Soluções: 903.267
-Coeficiente de Variação das Soluções: 1.3124%
-Média dos Tempos: 0.204164
-Coeficiente de Variação dos Tempos: 3.36221%
-Melhor Solução: 936
-Média das Soluções: 903.033
-Coeficiente de Variação das Soluções: 1.47673%
-Média dos Tempos: 0.202736
-Coeficiente de Variação dos Tempos: 3.26643%
-Melhor Solução: 2209
-Média das Soluções: 2164.43
-Coeficiente de Variação das Soluções: 1.06576%
-Média dos Tempos: 0.771942
-Coeficiente de Variação dos Tempos: 2.36653%
-Melhor Solução: 932
-Média das Soluções: 905.833
-Coeficiente de Variação das Soluções: 1.61396%
-Média dos Tempos: 0.182341
-Coeficiente de Variação dos Tempos: 3.44307%
+Melhor Solução: 2216
+Média das Soluções: 2165.2
+Coeficiente de Variação das Soluções: 0.97394%
+Média dos Tempos: 0.891179
+Coeficiente de Variação dos Tempos: 4.22084%

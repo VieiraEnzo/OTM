@@ -1,15 +1,5 @@
-Melhor Solução: 603
-Média das Soluções: 575.167
-Coeficiente de Variação das Soluções: 2.48288%
-Média dos Tempos: 0.0974051
-Coeficiente de Variação dos Tempos: 3.77081%
-Melhor Solução: 600
-Média das Soluções: 574.7
-Coeficiente de Variação das Soluções: 1.71206%
-Média dos Tempos: 0.0976928
-Coeficiente de Variação dos Tempos: 2.78247%
-Melhor Solução: 2182
-Média das Soluções: 2144.03
-Coeficiente de Variação das Soluções: 0.879897%
-Média dos Tempos: 0.788535
-Coeficiente de Variação dos Tempos: 2.08225%
+Melhor Solução: 2186
+Média das Soluções: 2140.77
+Coeficiente de Variação das Soluções: 1.01253%
+Média dos Tempos: 0.87653
+Coeficiente de Variação dos Tempos: 1.82385%
