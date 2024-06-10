@@ -37,6 +37,7 @@ void write_solutions(vector<double> &solutions, vector<double> &times, string re
     double std_dev_time = calculate_standard_deviation(times, mean_time);
     double cv_time = calculate_coefficient_of_variation(std_dev_time, mean_time);
 
+    //, std::ios_base::app
     std::ofstream output_file(result);
     if (output_file.is_open()) {
         output_file << "Melhor Solução: " << best_solution << std::endl;

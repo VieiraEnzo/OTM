@@ -3,3 +3,18 @@ Média das Soluções: 809.967
 Coeficiente de Variação das Soluções: 1.97706%
 Média dos Tempos: 0.175943
 Coeficiente de Variação dos Tempos: 2.66069%
+Melhor Solução: 844
+Média das Soluções: 809.367
+Coeficiente de Variação das Soluções: 1.80644%
+Média dos Tempos: 0.174664
+Coeficiente de Variação dos Tempos: 2.92056%
+Melhor Solução: 2229
+Média das Soluções: 2186.17
+Coeficiente de Variação das Soluções: 0.822603%
+Média dos Tempos: 0.796287
+Coeficiente de Variação dos Tempos: 2.28287%
+Melhor Solução: 838
+Média das Soluções: 814.1
+Coeficiente de Variação das Soluções: 1.85025%
+Média dos Tempos: 0.157851
+Coeficiente de Variação dos Tempos: 4.16896%

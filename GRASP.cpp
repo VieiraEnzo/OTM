@@ -78,21 +78,23 @@ void constructive(double alfa, Mochila &mochila){
 void checkNeighbors(Mochila &mochila){
 
     int melhor = 0;
-    pair<int,int> par = {0,0};
+    pair<int,int> par = {-1,-1};
     for(int i = 0; i < nI; i++){ //saindo
         if(!mochila.s[i]) continue;
         for(int j = 0; j < nI; j++){ //entrando
             if(mochila.s[j]) continue;
             if(mochila.peso - items[i].wheight + items[j].wheight > nC) continue;
-            mochila.s[i] = 0; if(!items[j].Compativel(mochila.s)){mochila.s[i] = 1;continue;}
+            mochila.s[i] = 0; 
+            if(!items[j].Compativel(mochila.s)){mochila.s[i] = 1;continue;}
             mochila.s[i] = 1;
             if(-items[i].value + items[j].value < melhor)continue;
             melhor = -items[i].value + items[j].value;
             par = {i,j};
         }
     }
-    mochila.s[par.first] = !mochila.s[par.first]; mochila.s[par.second] = !mochila.s[par.second];
-    mochila.lucro += melhor;
+    if(par.first == -1) return;
+    mochila.remove_element(par.first, items[par.first].value, items[par.first].wheight);
+    mochila.insert_element(par.second, items[par.second].value, items[par.second].wheight);
 }
 
 //Retorna o Máximo local da solução
@@ -141,10 +143,12 @@ int main(int argc, char **argv){
 
     for(int i = 1; i <= 10; i++){
 
-        string arq_inp = name + instB + to_string(i) + instE; 
+        string arq_inp = name + instB + to_string(i) + instE;
         string arq_out = "./results/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
 
         printf("Reading files...\n");
+        items.clear();
+        nI = nP = nC = 0;
         read_file(arq_inp, nI, nP, nC, items);
         printf("Files read\n");
 
@@ -166,4 +170,11 @@ int main(int argc, char **argv){
         
     }
 
+
+    // string arq_inp = name + instB + to_string(10) + instE; 
+    // printf("Reading files...\n");
+    // read_file(arq_inp, nI, nP, nC, items);
+    // printf("Files read\n");
+
+    // cout << GRASP(0.75, 100) << "\n";
 }

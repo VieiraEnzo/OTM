@@ -38,7 +38,7 @@ void checkNeighbors(Mochila &mochila){
 
     int melhor = 0;
     if(IsTabu(mochila, 0 ,0)) melhor = -1e9;
-    pair<int,int> par = {0,0};
+    pair<int,int> par = {-1,-1};
     for(int i = 0; i < nI; i++){ //saindo
         if(!mochila.s[i]) continue;
         for(int j = 0; j < nI; j++){ //entrando
@@ -52,8 +52,9 @@ void checkNeighbors(Mochila &mochila){
             par = {i,j};
         }
     }
-    mochila.s[par.first] = !mochila.s[par.first]; mochila.s[par.second] = !mochila.s[par.second];
-    mochila.lucro += melhor;
+    if(par.first == -1) return;
+    mochila.remove_element(par.first, items[par.first].value, items[par.first].wheight);
+    mochila.insert_element(par.second, items[par.second].value, items[par.second].wheight);
 }
 
 //Retorna o Máximo local da solução
