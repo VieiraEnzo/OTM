@@ -93,8 +93,7 @@ void Pertubation(Mochila &mochila){
     //Gera uma lista de caras que podem entrar
     // se estiver vazia tiramos um aleatorio
     // se não, escolhemos aleatoriamente para colocar ou botar
-    vector<int> PodemEntrar;
-    vector<int> PodemSair;
+    vector<int> PodemEntrar, PodemSair;
     for(int i = 0; i < nI; i++){
         if(mochila.s[i] == 1) {PodemSair.push_back(i); continue;}
         if( mochila.peso + items[i].wheight <= nC && items[i].Compativel(mochila.s) ){ PodemEntrar.push_back(i);}

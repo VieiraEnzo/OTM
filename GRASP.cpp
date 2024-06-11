@@ -17,7 +17,6 @@ typedef long long ll;
 
 using namespace __gnu_pbds;
 using ordered_set = tree<pair<double,int>, null_type, less<pair<double,int>>, rb_tree_tag, tree_order_statistics_node_update>;
-using ordered_multiset = tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>;
 
 using namespace std;
 
@@ -116,11 +115,11 @@ int localSearch(Mochila &mochila){
 int GRASP(double alfa, int maxIt){
     int LucroMax = 0;
     SortedPairs.clear();
-    buildSortedPairs();  //O(nlog)
+    buildSortedPairs();
     for(int i = 0; i < maxIt; i++){
         Mochila mochila;
-        constructive(alfa, mochila); //O(nlog)
-        int sol = localSearch(mochila); //O(n^2 * ?)
+        constructive(alfa, mochila); 
+        int sol = localSearch(mochila); 
         LucroMax = max(LucroMax, sol);
     }
     
