@@ -14,10 +14,6 @@
 
 typedef long long ll;
 
-using namespace __gnu_pbds;
-using ordered_set = tree<pair<double,int>, null_type, less<pair<double,int>>, rb_tree_tag, tree_order_statistics_node_update>;
-using ordered_multiset = tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>;
-
 using namespace std;
 
 int nI, nP, nC;
