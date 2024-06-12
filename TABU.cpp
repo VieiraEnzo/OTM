@@ -76,19 +76,21 @@ void construtivo(Mochila Mochila){
 
 }
 
-void Tabu(int itMax, int maxTabuSize){
+int Tabu(int itMax, int maxTabuSize){
+    int LucroMax = 0;
     Mochila mochila;
     construtivo(mochila);
     tabuList.insert(mochila);
     while (itMax--)
     {
         localSearch(mochila); //local search with Tabu-List
+        LucroMax = max(LucroMax, mochila.lucro); //guardo o maior lucro pelas iterações
         tabuList.insert(mochila);
         if(tabuList.size() > maxTabuSize){
             tabuList.erase(tabuList.begin()); //Por enquanto remove uma aletoria/menor lucro
         }
     }
-    
+    return LucroMax;
 }   
 
 int main(){

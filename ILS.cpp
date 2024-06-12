@@ -147,17 +147,20 @@ void construtivo(Mochila Mochila){
 }
 
 
-void ILS(int itMax){
+int ILS(int itMax){
     Mochila mochila;
     construtivo(mochila);
     localSearch(mochila);
+    int LucroMax = mochila.lucro;
     for(int i = 0; i < itMax; i++){
         Mochila nova = mochila;
         Pertubation(nova);
         localSearch(nova);
+        LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);
         printf("Iretation %d: LucroMax = %d\n", i+1, mochila.lucro);
     }
+    return LucroMax;
 }
 
 int main(){
