@@ -14,9 +14,14 @@
 
 typedef long long ll;
 
+using namespace __gnu_pbds;
+using ordered_set = tree<pair<double,int>, null_type, less<pair<double,int>>, rb_tree_tag, tree_order_statistics_node_update>;
+
+
 using namespace std;
 
 int nI, nP, nC;
+int lucroFrac;
 vector<item> items;
 vector<pair<double,int>> SortedPairs;
 
@@ -29,7 +34,7 @@ void buildSortedPairs(){
 
 //Resolve o problema da mochila Fracionaria
 int Resolve_Fracionaria(){
-    buildSortedPairs();
+
     int cap = nC, lucro = 0;
     for(auto a : SortedPairs){
         int i  = a.second;
@@ -128,7 +133,6 @@ Mochila CriterioAceitacao(Mochila &mochila, Mochila &nova){
     //Resolver a mochila fracionaria
     // e usar o resultado (razao do lucro atual com o da fracionaria) como probabilidade
     // para pegar a solução
-    int lucroFrac =  Resolve_Fracionaria();
     int rp = rand() % lucroFrac;
     if(nova.lucro <= rp){
         return nova;
@@ -137,19 +141,59 @@ Mochila CriterioAceitacao(Mochila &mochila, Mochila &nova){
     }
 
 }
-//Retorna uma solução construtiva do problema
-void construtivo(Mochila Mochila){
-    //Para cada dupla, testar com base no guloso básico
-    //qual tem a melhor mochila. Com isso fixamos esses 2 elementos, e
-    //resolvemos para o subconjunto sem eles.
-    // Testar primeiro o de um elemento só em vez de dupla.
 
+
+struct LCR
+{   
+    int inf = 1e9;
+    double hmin, hmax, alfa;
+    ordered_set elementos;
+    
+
+    LCR (double alfa) : alfa(alfa){
+
+        for(int i = 0; i < nI; i++) elementos.insert(SortedPairs[i]);
+    }
+
+    int get_element(){
+        hmin = (*elementos.begin()).first;
+        hmax = (*prev(elementos.end())).first;
+        int nb = elementos.order_of_key({hmax + alfa * (hmin - hmax), inf});
+        int rp = rand() % nb;
+        auto it = elementos.find_by_order(rp);
+        int IndRem = (*it).second;
+        elementos.erase(it);   
+        return IndRem;
+    }
+
+};
+
+//Algoritmo construtivo O(nlog), atualmente sem fila bonitinha
+void construtivo(double alfa, Mochila &mochila){
+    //Modificar a razão
+    LCR lcr(alfa);
+
+    for(int i = 0; i < nI; i++){
+        int it = lcr.get_element();
+        if(mochila.peso + items[it].wheight <= nC && items[it].Compativel(mochila.s)){
+            mochila.peso += items[it].wheight;
+            mochila.lucro += items[it].value;
+            mochila.s[it] = 1;
+        }
+    }
+}
+
+void init(){
+    SortedPairs.clear();
+    buildSortedPairs();
+    lucroFrac = Resolve_Fracionaria();
 }
 
 
 int ILS(int itMax){
     Mochila mochila;
-    construtivo(mochila);
+    init();
+    construtivo(0.75 , mochila);
     localSearch(mochila);
     int LucroMax = mochila.lucro;
     for(int i = 0; i < itMax; i++){
@@ -173,6 +217,6 @@ int main(){
     printf("Files read\n");
 
     printf("Running ILS\n");
-    ILS(10);
+    cout << ILS(100) << "\n";
 
 }
