@@ -1,4 +1,5 @@
 #include "./tools/file.h"
+#include "./tools/statistics.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,6 +8,7 @@
 #include <bitset>
 #include <algorithm>
 #include <set>
+#include <chrono>
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 
@@ -202,21 +204,45 @@ int ILS(int itMax){
         localSearch(nova);
         LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);
-        printf("Iretation %d: LucroMax = %d\n", i+1, mochila.lucro);
     }
     return LucroMax;
 }
 
-int main(){
-    string name = "./dckp_instances/500/dckp_1_sum.txt";
+int main(int argc, char **argv){
+
+    if(argc < 2){ cout << "Argumentos não suficientes\n";}
+    string TamInst = argv[1];
+    string name = "./dckp_instances/" + TamInst + "/";
+    string instB = "dckp_", instE = "_sum.txt";
     srand (time(NULL));
-    
 
-    printf("Reading files...\n");
-    read_file(name , nI, nP, nC, items);
-    printf("Files read\n");
 
-    printf("Running ILS\n");
-    cout << ILS(100) << "\n";
+    for(int i = 1; i <= 10; i++){
 
+        string arq_inp = name + instB + to_string(i) + instE;
+        string arq_out = "./results/ILS/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
+
+        printf("Reading files...\n");
+        items.clear();
+        nI = nP = nC = 0;
+        read_file(arq_inp, nI, nP, nC, items);
+        printf("Files read\n");
+
+        printf("Running GRASP\n");
+
+        vector<double> solucoes, tempos;
+        for(int i = 0; i < 30; i++){
+            auto start = std::chrono::high_resolution_clock::now();
+            int sol = ILS(100);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            double execution_time = elapsed.count();
+            solucoes.push_back(sol);
+            tempos.push_back(execution_time);
+            printf("Iretation %d\n", i);
+        }
+
+        write_solutions(solucoes, tempos, arq_out);
+        
+    }
 }

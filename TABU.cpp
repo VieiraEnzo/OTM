@@ -1,4 +1,5 @@
 #include "./tools/file.h"
+#include "./tools/statistics.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,6 +8,8 @@
 #include <bitset>
 #include <algorithm>
 #include <set>
+#include <queue>
+#include <chrono>
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 
@@ -23,6 +26,7 @@ using namespace std;
 int nI, nP, nC;
 vector<item> items;
 set<Mochila> tabuList;
+queue<Mochila> tabuQueue;
 
 //Retorna se a solução está no Tabu
 bool IsTabu(Mochila &mochila, int i, int j){
@@ -73,10 +77,6 @@ int localSearch(Mochila &mochila){
 
 //Retorna uma solução construtiva do problema
 void construtivo(Mochila Mochila){
-    //Para cada dupla, testar com base no guloso básico
-    //qual tem a melhor mochila. Com isso fixamos esses 2 elementos, e
-    //resolvemos para o subconjunto sem eles.
-    // Testar primeiro o de um elemento só em vez de dupla.
 
 }
 
@@ -85,28 +85,64 @@ int Tabu(int itMax, int maxTabuSize){
     Mochila mochila;
     construtivo(mochila);
     tabuList.insert(mochila);
+    tabuQueue.push(mochila);
     while (itMax--)
     {
         localSearch(mochila); //local search with Tabu-List
         LucroMax = max(LucroMax, mochila.lucro); //guardo o maior lucro pelas iterações
         tabuList.insert(mochila);
-        if(tabuList.size() > maxTabuSize){
-            tabuList.erase(tabuList.begin()); //Por enquanto remove uma aletoria/menor lucro
+        tabuQueue.push(mochila);
+        if(tabuQueue.size() > maxTabuSize){
+            tabuList.erase(tabuQueue.front()); //Por enquanto remove uma aletoria/menor lucro
+            tabuQueue.pop();
         }
     }
     return LucroMax;
 }   
 
-int main(){
-    string name = "./dckp_instances/500/dckp_1_sum.txt";
+int main(int argc, char **argv){
+
+    if(argc < 2){ cout << "Argumentos não suficientes\n";}
+    string TamInst = argv[1];
+    string name = "./dckp_instances/" + TamInst + "/";
+    string instB = "dckp_", instE = "_sum.txt";
     srand (time(NULL));
-    
 
-    printf("Reading files...\n");
-    read_file(name , nI, nP, nC, items);
-    printf("Files read\n");
 
-    printf("Running Tabu\n");
-    Tabu(10, 100);
+    for(int i = 1; i <= 10; i++){
 
+        string arq_inp = name + instB + to_string(i) + instE;
+        string arq_out = "./results/Tabu/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
+
+        printf("Reading files...\n");
+        items.clear();
+        nI = nP = nC = 0;
+        read_file(arq_inp, nI, nP, nC, items);
+        printf("Files read\n");
+
+        printf("Running GRASP\n");
+
+        vector<double> solucoes, tempos;
+        for(int i = 0; i < 30; i++){
+            auto start = std::chrono::high_resolution_clock::now();
+            int sol = Tabu(100, 10);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            double execution_time = elapsed.count();
+            solucoes.push_back(sol);
+            tempos.push_back(execution_time);
+            printf("Iretation %d\n", i);
+        }
+
+        write_solutions(solucoes, tempos, arq_out);
+        
+    }
+
+
+    // string arq_inp = name + instB + to_string(10) + instE; 
+    // printf("Reading files...\n");
+    // read_file(arq_inp, nI, nP, nC, items);
+    // printf("Files read\n");
+
+    // cout << GRASP(0.75, 100) << "\n";
 }

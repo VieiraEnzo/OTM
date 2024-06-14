@@ -36,4 +36,12 @@ struct Mochila
         lucro += lucroE;
         peso += pesoE;
     }
+
+    bool operator<(const Mochila &a) const{
+        for(int i = 0; i < s.size(); i++){
+            if(this->s[i] > a.s[i]) return false;
+            else if(this->s[i] < a.s[i]) return true;
+        }
+        return true;
+    }
 };
