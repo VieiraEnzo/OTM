@@ -197,6 +197,17 @@ void construtivo_forte(double alfa, Mochila& mochila, int iteracoes){
   sort(tmp.begin(), tmp.end(), [&](int i1, int i2){return freq[i1] > freq[i2];});
   for(int i = 0; i < nI; i++){
     int item = tmp[i];
+    if(items[item].Compativel(mochila.s) && mochila.peso + items[item].wheight <= nC/2){
+      mochila.insert_element(item, items[item].value, items[item].wheight);
+    }
+  }
+
+  auto cmp = [&](int i1, int i2){
+    return (double)items[i1].value/items[i1].wheight > (double)items[i2].value/items[i2].wheight;
+  };
+  sort(tmp.begin(), tmp.end(), cmp);
+  for(int i = 0; i < nI; i++){
+    int item = tmp[i];
     if(items[item].Compativel(mochila.s) && mochila.peso + items[item].wheight <= nC){
       mochila.insert_element(item, items[item].value, items[item].wheight);
     }
@@ -223,7 +234,6 @@ int ILS(int itConstr, int itILS){
         localSearch(nova);
         LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);
-        printf("Iretation %d: LucroMax = %d\n", i+1, mochila.lucro);
     }
     return LucroMax;
 }
@@ -237,7 +247,7 @@ int main(int argc, char **argv){
     srand (time(NULL));
 
 
-    for(int i = 1; i <= 10; i++){
+    for(int i = 10; i <= 10; i++){
 
         string arq_inp = name + instB + to_string(i) + instE;
         string arq_out = "./results/ILS/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
@@ -253,7 +263,7 @@ int main(int argc, char **argv){
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
             auto start = std::chrono::high_resolution_clock::now();
-            int sol = ILS(100, 100);
+            int sol = ILS(1000, 200);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed = end - start;
             double execution_time = elapsed.count();

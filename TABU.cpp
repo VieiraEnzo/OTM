@@ -28,6 +28,17 @@ vector<item> items;
 set<Mochila> tabuList;
 queue<Mochila> tabuQueue;
 
+vector<pair<double,int>> SortedPairs;
+
+void buildSortedPairs(int razaoValue, int razaoPeso){
+  for(int i = 0; i < nI ; i++){
+    //mudar os pesos da razão!!
+      SortedPairs.push_back({(double)pow(items[i].value, razaoValue)/(double)pow(items[i].wheight,razaoPeso), i});
+  }
+  sort(SortedPairs.rbegin(), SortedPairs.rend());
+}
+
+
 //Retorna se a solução está no Tabu
 bool IsTabu(Mochila &mochila, int i, int j){
     bool valid = false;
@@ -75,15 +86,89 @@ int localSearch(Mochila &mochila){
     return smax;
 }
 
-//Retorna uma solução construtiva do problema
-void construtivo(Mochila Mochila){
+struct LCR
+{   
+    int inf = 1e9;
+    double hmin, hmax, alfa;
+    ordered_set elementos;
+    
 
+    LCR (double alfa) : alfa(alfa){
+
+        for(int i = 0; i < nI; i++) elementos.insert(SortedPairs[i]);
+    }
+
+    int get_element(){
+        hmin = (*elementos.begin()).first;
+        hmax = (*prev(elementos.end())).first;
+        int nb = elementos.order_of_key({hmax + alfa * (hmin - hmax), inf});
+        int rp = rand() % nb;
+        auto it = elementos.find_by_order(rp);
+        int IndRem = (*it).second;
+        elementos.erase(it);   
+        return IndRem;
+    }
+
+};
+
+void construtivo_fraco(double alfa, Mochila &mochila){
+  LCR lcr(alfa);
+
+  for(int i = 0; i < nI; i++){
+    int it = lcr.get_element();
+    if(mochila.peso + items[it].wheight <= nC && items[it].Compativel(mochila.s)){
+      mochila.peso += items[it].wheight;
+      mochila.lucro += items[it].value;
+      mochila.s[it] = 1;
+    }
+  }
 }
 
-int Tabu(int itMax, int maxTabuSize){
+void construtivo_forte(double alfa, Mochila& mochila, int iteracoes){
+  vector <int> freq(nI, 0);
+  for(int i = 0; i < iteracoes; i++){
+    Mochila tmp;
+    construtivo_fraco(alfa, tmp);
+    for(int i = 0; i < nI; i++){
+      if(tmp.s[i] == 1){
+        freq[i] += 1;
+      }
+    }
+  }
+  vector <int> tmp(nI);
+  for(int i = 0; i < nI; i++){
+    tmp[i] = i;
+  }
+  sort(tmp.begin(), tmp.end(), [&](int i1, int i2){return freq[i1] > freq[i2];});
+  for(int i = 0; i < nI; i++){
+    int item = tmp[i];
+    if(items[item].Compativel(mochila.s) && mochila.peso + items[item].wheight <= nC/2){
+      mochila.insert_element(item, items[item].value, items[item].wheight);
+    }
+  }
+
+  auto cmp = [&](int i1, int i2){
+    return (double)items[i1].value/items[i1].wheight > (double)items[i2].value/items[i2].wheight;
+  };
+  sort(tmp.begin(), tmp.end(), cmp);
+  for(int i = 0; i < nI; i++){
+    int item = tmp[i];
+    if(items[item].Compativel(mochila.s) && mochila.peso + items[item].wheight <= nC){
+      mochila.insert_element(item, items[item].value, items[item].wheight);
+    }
+  }
+}
+
+void init(){
+    SortedPairs.clear();
+    buildSortedPairs(1,1);
+}
+
+int Tabu(int itMax, int maxTabuSize, int itConstru){
     int LucroMax = 0;
     Mochila mochila;
-    construtivo(mochila);
+    init();
+    construtivo_forte(0.75, mochila, itConstru);
     tabuList.insert(mochila);
     tabuQueue.push(mochila);
     while (itMax--)
@@ -125,7 +210,7 @@ int main(int argc, char **argv){
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
             auto start = std::chrono::high_resolution_clock::now();
-            int sol = Tabu(100, 10);
+            int sol = Tabu(100, 100, 500);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed = end - start;
             double execution_time = elapsed.count();
@@ -138,11 +223,4 @@ int main(int argc, char **argv){
         
     }
 
-
-    // string arq_inp = name + instB + to_string(10) + instE; 
-    // printf("Reading files...\n");
-    // read_file(arq_inp, nI, nP, nC, items);
-    // printf("Files read\n");
-
-    // cout << GRASP(0.75, 100) << "\n";
 }
