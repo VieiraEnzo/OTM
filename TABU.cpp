@@ -205,7 +205,7 @@ int main(int argc, char **argv){
         read_file(arq_inp, nI, nP, nC, items);
         printf("Files read\n");
 
-        printf("Running GRASP\n");
+        printf("Running Tabu\n");
 
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){

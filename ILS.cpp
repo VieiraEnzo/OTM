@@ -247,7 +247,7 @@ int main(int argc, char **argv){
     srand (time(NULL));
 
 
-    for(int i = 10; i <= 10; i++){
+    for(int i = 1; i <= 10; i++){
 
         string arq_inp = name + instB + to_string(i) + instE;
         string arq_out = "./results/ILS/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
@@ -258,7 +258,7 @@ int main(int argc, char **argv){
         read_file(arq_inp, nI, nP, nC, items);
         printf("Files read\n");
 
-        printf("Running GRASP\n");
+        printf("Running ILS\n");
 
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
