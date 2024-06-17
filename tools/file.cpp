@@ -23,6 +23,8 @@ void read_file(std::string name, int &nI, int &nP, int &C,
         items[b].forbidden[a] = items[a].forbidden[b] = true;
     }
 
+    for(int i = 0; i < nI; i++) items[i].forbidden[i] = true;
+
     myfile.close();
 }
 
