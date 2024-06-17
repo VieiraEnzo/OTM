@@ -89,7 +89,7 @@ int localSearch(Mochila &mochila){
 }
 
 //Faz um Pertubação Aleatória na solução
-void Pertubation(Mochila &mochila){
+void Pertubation(Mochila &mochila, int qts){
     //Gera uma lista de caras que podem entrar
     // se estiver vazia tiramos um aleatorio
     // se não, escolhemos aleatoriamente para colocar ou botar
@@ -101,27 +101,51 @@ void Pertubation(Mochila &mochila){
 
     int operação = rand()%2;
 
-    if(PodemEntrar.size() == 0){
-        int rp = rand() % PodemSair.size();
+    if(PodemEntrar.size() < qts){
+      int tam = PodemSair.size();
+      int pointer = PodemSair.size()-1;
+      for(int i = 0; i < qts; i++){
+        int rp = rand() % tam;
         int elem = PodemSair[rp];
         mochila.remove_element(elem, items[elem].value, items[elem].wheight);
-        return;
+        tam--; swap(PodemSair[rp], PodemSair[pointer]);
+        pointer--;
+      }
+      return;
     }
-    if(PodemSair.size() == 0){
-        int rp = rand() % PodemEntrar.size();
+    if(PodemSair.size() < qts){
+      int tam = PodemEntrar.size();
+      int pointer = PodemEntrar.size()-1;
+      for(int i = 0; i < qts; i++){
+        int rp = rand() % tam;
         int elem = PodemEntrar[rp];
-        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
-        return;
+        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+        tam--; swap(PodemEntrar[rp], PodemEntrar[pointer]);
+        pointer--;
+      }
+      return;
     }
 
     if(operação){
-        int rp = rand() % PodemSair.size();
-        int elem = PodemSair[rp];
-        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+        int tam = PodemSair.size();
+        int pointer = PodemSair.size()-1;
+        for(int i = 0; i < qts; i++){
+          int rp = rand() % tam;
+          int elem = PodemSair[rp];
+          mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+          tam--; swap(PodemSair[rp], PodemSair[pointer]);
+          pointer--;
+        }
     }else{
-        int rp = rand() % PodemEntrar.size();
-        int elem = PodemEntrar[rp];
-        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
+        int tam = PodemEntrar.size();
+        int pointer = PodemEntrar.size()-1;
+        for(int i = 0; i < qts; i++){
+          int rp = rand() % tam;
+          int elem = PodemEntrar[rp];
+          mochila.remove_element(elem, items[elem].value, items[elem].wheight);
+          tam--; swap(PodemEntrar[rp], PodemEntrar[pointer]);
+          pointer--;
+        }
     }
 }
 
@@ -215,6 +239,7 @@ void construtivo_forte(double alfa, Mochila& mochila, int iteracoes){
 }
 
 void init(){
+    const int razao_valor = 1, razao_peso = 1;
     SortedPairs.clear();
     buildSortedPairs(1,1);
     lucroFrac = Resolve_Fracionaria();
@@ -225,12 +250,11 @@ int ILS(int itConstr, int itILS){
     Mochila mochila;
     init();
     construtivo_forte(0.75 , mochila, itConstr);
-    // construtivo_fraco(0.75, mochila);
     localSearch(mochila);
     int LucroMax = mochila.lucro;
     for(int i = 0; i < itILS; i++){
         Mochila nova = mochila;
-        Pertubation(nova);
+        Pertubation(nova, 10);
         localSearch(nova);
         LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);
@@ -244,8 +268,10 @@ int main(int argc, char **argv){
     string TamInst = argv[1];
     string name = "./dckp_instances/" + TamInst + "/";
     string instB = "dckp_", instE = "_sum.txt";
-    srand (time(NULL));
+    srand (time(NULL)); 
 
+    const int itConstr = 1000;
+    const int itILS = 200;
 
     for(int i = 1; i <= 10; i++){
 
@@ -263,7 +289,7 @@ int main(int argc, char **argv){
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
             auto start = std::chrono::high_resolution_clock::now();
-            int sol = ILS(1000, 200);
+            int sol = ILS(itConstr, itILS);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed = end - start;
             double execution_time = elapsed.count();
@@ -271,16 +297,12 @@ int main(int argc, char **argv){
             tempos.push_back(execution_time);
             printf("Iretation %d\n", i);
         }
+        vector<string> params;
+        params.push_back("itConstrutivo = " + to_string(itConstr));
+        params.push_back("itILS = " + to_string(itILS));
+        params.push_back("pertubation = " + to_string(10));
 
-        write_solutions(solucoes, tempos, arq_out);
+        write_solutions(params, solucoes, tempos, arq_out);
         
     }
-
-
-    // string arq_inp = name + instB + to_string(10) + instE; 
-    // printf("Reading files...\n");
-    // read_file(arq_inp, nI, nP, nC, items);
-    // printf("Files read\n");
-
-    // cout << GRASP(0.75, 100) << "\n";
 }

@@ -1,5 +1,20 @@
-Melhor Solução: 2287
-Média das Soluções: 2176.1
-Coeficiente de Variação das Soluções: 2.79247%
-Média dos Tempos: 0.067696
-Coeficiente de Variação dos Tempos: 2.23223%
+itConstrutivo = 1000 itILS = 200 
+Melhor Solução: 2289
+Média das Soluções: 2209.67
+Coeficiente de Variação das Soluções: 1.64507%
+Média dos Tempos: 0.196833
+Coeficiente de Variação dos Tempos: 2.11123%
+
+itConstrutivo = 1000 itILS = 100 
+Melhor Solução: 2284
+Média das Soluções: 2201.8
+Coeficiente de Variação das Soluções: 1.69472%
+Média dos Tempos: 0.14157
+Coeficiente de Variação dos Tempos: 1.66958%
+
+itConstrutivo = 500 itILS = 200 
+Melhor Solução: 2279
+Média das Soluções: 2213.3
+Coeficiente de Variação das Soluções: 1.44779%
+Média dos Tempos: 0.14403
+Coeficiente de Variação dos Tempos: 1.95671%

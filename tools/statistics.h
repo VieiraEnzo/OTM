@@ -27,7 +27,7 @@ double calculate_coefficient_of_variation(double std_dev, double mean) {
 }
 
 
-void write_solutions(vector<double> &solutions, vector<double> &times, string result){
+void write_solutions(vector<string> &parameters, vector<double> &solutions, vector<double> &times, string result){
     int best_solution = *max_element(solutions.begin(), solutions.end());
     double mean_solution = calculate_mean(solutions);
     double std_dev_solution = calculate_standard_deviation(solutions, mean_solution);
@@ -38,8 +38,11 @@ void write_solutions(vector<double> &solutions, vector<double> &times, string re
     double cv_time = calculate_coefficient_of_variation(std_dev_time, mean_time);
 
     //, std::ios_base::app
-    std::ofstream output_file(result);
+    std::ofstream output_file(result, ios_base::app);
     if (output_file.is_open()) {
+        output_file << "\n";
+        for(auto p : parameters) output_file << p << " ";
+        output_file << "\n"; 
         output_file << "Melhor Solução: " << best_solution << std::endl;
         output_file << "Média das Soluções: " << mean_solution << std::endl;
         output_file << "Coeficiente de Variação das Soluções: " << cv_solution << "%" << std::endl;

@@ -128,22 +128,20 @@ int GRASP(double alfa, int maxIt){
 
 
 
-
-
 int main(int argc, char **argv){
 
     if(argc < 2){ cout << "Argumentos não suficientes\n";}
     string TamInst = argv[1];
     string name = "./dckp_instances/" + TamInst + "/";
     string instB = "dckp_", instE = "_sum.txt";
-    double alfa = 0.75;
+    double alfa = 0.999;
     srand (time(NULL));
 
 
     for(int i = 1; i <= 10; i++){
 
         string arq_inp = name + instB + to_string(i) + instE;
-        string arq_out = "./results/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
+        string arq_out = "./results/GRASP/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
 
         printf("Reading files...\n");
         items.clear();
@@ -164,8 +162,10 @@ int main(int argc, char **argv){
             tempos.push_back(execution_time);
             printf("Iretation %d\n", i);
         }
-
-        write_solutions(solucoes, tempos, arq_out);
+        vector<string> params;
+        params.push_back("alfa = " + to_string(alfa));
+        params.push_back("razao = 2/3");
+        write_solutions(params, solucoes, tempos, arq_out);
         
     }
 

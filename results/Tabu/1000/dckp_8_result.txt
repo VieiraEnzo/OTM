@@ -1,5 +1,27 @@
+Tamanho da lista tabu = 100 
 Melhor Solução: 4370
 Média das Soluções: 4239.07
 Coeficiente de Variação das Soluções: 1.35668%
 Média dos Tempos: 0.377245
 Coeficiente de Variação dos Tempos: 3.46781%
+
+Tamanho da lista tabu = 10 
+Melhor Solução: 4322
+Média das Soluções: 4262.63
+Coeficiente de Variação das Soluções: 0.765051%
+Média dos Tempos: 0.480807
+Coeficiente de Variação dos Tempos: 1.72958%
+
+Tamanho da lista tabu = 500 
+Melhor Solução: 4334
+Média das Soluções: 4265.3
+Coeficiente de Variação das Soluções: 1.01379%
+Média dos Tempos: 0.461392
+Coeficiente de Variação dos Tempos: 1.40213%
+
+Tamanho da lista tabu = 1000 
+Melhor Solução: 4369
+Média das Soluções: 4266.97
+Coeficiente de Variação das Soluções: 1.30525%
+Média dos Tempos: 0.473727
+Coeficiente de Variação dos Tempos: 2.5019%

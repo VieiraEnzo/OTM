@@ -1,5 +1,34 @@
+alfa = 0.750000 
 Melhor Solução: 2198
 Média das Soluções: 2170.57
 Coeficiente de Variação das Soluções: 0.674766%
 Média dos Tempos: 0.887839
 Coeficiente de Variação dos Tempos: 2.08282%
+
+alfa = 0.850000 
+Melhor Solução: 2201
+Média das Soluções: 2156.93
+Coeficiente de Variação das Soluções: 0.891145%
+Média dos Tempos: 0.830372
+Coeficiente de Variação dos Tempos: 2.39349%
+
+alfa = 0.650000 
+Melhor Solução: 2217
+Média das Soluções: 2175.73
+Coeficiente de Variação das Soluções: 0.867763%
+Média dos Tempos: 0.963186
+Coeficiente de Variação dos Tempos: 2.24008%
+
+alfa = 0.000000 
+Melhor Solução: 2215
+Média das Soluções: 2164.83
+Coeficiente de Variação das Soluções: 0.933667%
+Média dos Tempos: 1.20147
+Coeficiente de Variação dos Tempos: 1.93176%
+
+alfa = 0.999000 
+Melhor Solução: 2057
+Média das Soluções: 2057
+Coeficiente de Variação das Soluções: 0%
+Média dos Tempos: 0.618133
+Coeficiente de Variação dos Tempos: 0.0763358%
