@@ -7,8 +7,8 @@
 #include <utility>
 #include <bitset>
 #include <algorithm>
-#include <set>
 #include <chrono>
+#include <set>
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 
@@ -27,16 +27,16 @@ int lucroFrac;
 vector<item> items;
 vector<pair<double,int>> SortedPairs;
 
-void buildSortedPairs(){
-    for(int i = 0; i < nI ; i++){
-        SortedPairs.push_back({(double)items[i].value/(double)items[i].wheight, i});
-    }
-    sort(SortedPairs.rbegin(), SortedPairs.rend());
+void buildSortedPairs(int razaoValue, int razaoPeso){
+  for(int i = 0; i < nI ; i++){
+    //mudar os pesos da razão!!
+      SortedPairs.push_back({(double)pow(items[i].value, razaoValue)/(double)pow(items[i].wheight,razaoPeso), i});
+  }
+  sort(SortedPairs.rbegin(), SortedPairs.rend());
 }
 
 //Resolve o problema da mochila Fracionaria
 int Resolve_Fracionaria(){
-
     int cap = nC, lucro = 0;
     for(auto a : SortedPairs){
         int i  = a.second;
@@ -51,8 +51,6 @@ int Resolve_Fracionaria(){
     }
     return lucro;
 }
-
-
 
 //Checa a Vizinhança e retorna o melhor e muda a solução
 void checkNeighbors(Mochila &mochila){
@@ -80,7 +78,6 @@ void checkNeighbors(Mochila &mochila){
 //Retorna o Máximo local da solução
 int localSearch(Mochila &mochila){
 
-    int i = 0;
     int smax = -1, sit = 0;
     while(smax < sit){
         smax = max(sit, smax);
@@ -126,7 +123,6 @@ void Pertubation(Mochila &mochila){
         int elem = PodemEntrar[rp];
         mochila.insert_element(elem, items[elem].value, items[elem].wheight);
     }
-
 }
 
 //Decide se a solução nova vai ser aceita ou não,
@@ -170,40 +166,64 @@ struct LCR
 
 };
 
-//Algoritmo construtivo O(nlog), atualmente sem fila bonitinha
-void construtivo(double alfa, Mochila &mochila){
-    //Modificar a razão
-    LCR lcr(alfa);
+void construtivo_fraco(double alfa, Mochila &mochila){
+  LCR lcr(alfa);
 
-    for(int i = 0; i < nI; i++){
-        int it = lcr.get_element();
-        if(mochila.peso + items[it].wheight <= nC && items[it].Compativel(mochila.s)){
-            mochila.peso += items[it].wheight;
-            mochila.lucro += items[it].value;
-            mochila.s[it] = 1;
-        }
+  for(int i = 0; i < nI; i++){
+    int it = lcr.get_element();
+    if(mochila.peso + items[it].wheight <= nC && items[it].Compativel(mochila.s)){
+      mochila.peso += items[it].wheight;
+      mochila.lucro += items[it].value;
+      mochila.s[it] = 1;
     }
+  }
+}
+
+void construtivo_forte(double alfa, Mochila& mochila, int iteracoes){
+  vector <int> freq(nI, 0);
+  for(int i = 0; i < iteracoes; i++){
+    Mochila tmp;
+    construtivo_fraco(alfa, tmp);
+    for(int i = 0; i < nI; i++){
+      if(tmp.s[i] == 1){
+        freq[i] += 1;
+      }
+    }
+  }
+  vector <int> tmp(nI);
+  for(int i = 0; i < nI; i++){
+    tmp[i] = i;
+  }
+  sort(tmp.begin(), tmp.end(), [&](int i1, int i2){return freq[i1] > freq[i2];});
+  for(int i = 0; i < nI; i++){
+    int item = tmp[i];
+    if(items[item].Compativel(mochila.s) && mochila.peso + items[item].wheight <= nC){
+      mochila.insert_element(item, items[item].value, items[item].wheight);
+    }
+  }
 }
 
 void init(){
     SortedPairs.clear();
-    buildSortedPairs();
+    buildSortedPairs(1,1);
     lucroFrac = Resolve_Fracionaria();
 }
 
 
-int ILS(int itMax){
+int ILS(int itConstr, int itILS){
     Mochila mochila;
     init();
-    construtivo(0.75 , mochila);
+    construtivo_forte(0.75 , mochila, itConstr);
+    // construtivo_fraco(0.75, mochila);
     localSearch(mochila);
     int LucroMax = mochila.lucro;
-    for(int i = 0; i < itMax; i++){
+    for(int i = 0; i < itILS; i++){
         Mochila nova = mochila;
         Pertubation(nova);
         localSearch(nova);
         LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);
+        printf("Iretation %d: LucroMax = %d\n", i+1, mochila.lucro);
     }
     return LucroMax;
 }
@@ -233,7 +253,7 @@ int main(int argc, char **argv){
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
             auto start = std::chrono::high_resolution_clock::now();
-            int sol = ILS(100);
+            int sol = ILS(100, 100);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed = end - start;
             double execution_time = elapsed.count();
@@ -245,4 +265,12 @@ int main(int argc, char **argv){
         write_solutions(solucoes, tempos, arq_out);
         
     }
+
+
+    // string arq_inp = name + instB + to_string(10) + instE; 
+    // printf("Reading files...\n");
+    // read_file(arq_inp, nI, nP, nC, items);
+    // printf("Files read\n");
+
+    // cout << GRASP(0.75, 100) << "\n";
 }
