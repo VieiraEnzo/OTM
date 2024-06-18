@@ -32,3 +32,24 @@ Média das Soluções: 4245.5
 Coeficiente de Variação das Soluções: 1.07267%
 Média dos Tempos: 0.48445
 Coeficiente de Variação dos Tempos: 3.83422%
+
+itConstrutivo = 1000 itILS = 200 pertubation = 10 
+Melhor Solução: 4383
+Média das Soluções: 4272.13
+Coeficiente de Variação das Soluções: 1.24237%
+Média dos Tempos: 0.641083
+Coeficiente de Variação dos Tempos: 3.49908%
+
+itConstrutivo = 1000 itILS = 200 pertubation = 10 
+Melhor Solução: 4353
+Média das Soluções: 4274.17
+Coeficiente de Variação das Soluções: 0.900585%
+Média dos Tempos: 0.664661
+Coeficiente de Variação dos Tempos: 3.78714%
+
+itConstrutivo = 1000 itILS = 200 pertubation = 10 
+Melhor Solução: 4359
+Média das Soluções: 4269.77
+Coeficiente de Variação das Soluções: 1.1978%
+Média dos Tempos: 0.640472
+Coeficiente de Variação dos Tempos: 1.94127%

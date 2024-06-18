@@ -89,7 +89,7 @@ int localSearch(Mochila &mochila){
 }
 
 //Faz um Pertubação Aleatória na solução
-void Pertubation(Mochila &mochila, int qts){
+void Pertubation(Mochila &mochila){
     //Gera uma lista de caras que podem entrar
     // se estiver vazia tiramos um aleatorio
     // se não, escolhemos aleatoriamente para colocar ou botar
@@ -101,53 +101,31 @@ void Pertubation(Mochila &mochila, int qts){
 
     int operação = rand()%2;
 
-    if(PodemEntrar.size() < qts){
-      int tam = PodemSair.size();
-      int pointer = PodemSair.size()-1;
-      for(int i = 0; i < qts; i++){
-        int rp = rand() % tam;
+    if(PodemEntrar.size() == 0){
+        int rp = rand() % PodemSair.size();
         int elem = PodemSair[rp];
         mochila.remove_element(elem, items[elem].value, items[elem].wheight);
-        tam--; swap(PodemSair[rp], PodemSair[pointer]);
-        pointer--;
-      }
-      return;
+        return;
     }
-    if(PodemSair.size() < qts){
-      int tam = PodemEntrar.size();
-      int pointer = PodemEntrar.size()-1;
-      for(int i = 0; i < qts; i++){
-        int rp = rand() % tam;
+    if(PodemSair.size() == 0){
+        int rp = rand() % PodemEntrar.size();
         int elem = PodemEntrar[rp];
-        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
-        tam--; swap(PodemEntrar[rp], PodemEntrar[pointer]);
-        pointer--;
-      }
-      return;
+        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
+        return;
     }
 
     if(operação){
-        int tam = PodemSair.size();
-        int pointer = PodemSair.size()-1;
-        for(int i = 0; i < qts; i++){
-          int rp = rand() % tam;
-          int elem = PodemSair[rp];
-          mochila.remove_element(elem, items[elem].value, items[elem].wheight);
-          tam--; swap(PodemSair[rp], PodemSair[pointer]);
-          pointer--;
-        }
+        int rp = rand() % PodemSair.size();
+        int elem = PodemSair[rp];
+        mochila.remove_element(elem, items[elem].value, items[elem].wheight);
     }else{
-        int tam = PodemEntrar.size();
-        int pointer = PodemEntrar.size()-1;
-        for(int i = 0; i < qts; i++){
-          int rp = rand() % tam;
-          int elem = PodemEntrar[rp];
-          mochila.remove_element(elem, items[elem].value, items[elem].wheight);
-          tam--; swap(PodemEntrar[rp], PodemEntrar[pointer]);
-          pointer--;
-        }
+        int rp = rand() % PodemEntrar.size();
+        int elem = PodemEntrar[rp];
+        mochila.insert_element(elem, items[elem].value, items[elem].wheight);
     }
+
 }
+
 
 //Decide se a solução nova vai ser aceita ou não,
 //deve balancear diversidade com otimalidade
@@ -196,9 +174,7 @@ void construtivo_fraco(double alfa, Mochila &mochila){
   for(int i = 0; i < nI; i++){
     int it = lcr.get_element();
     if(mochila.peso + items[it].wheight <= nC && items[it].Compativel(mochila.s)){
-      mochila.peso += items[it].wheight;
-      mochila.lucro += items[it].value;
-      mochila.s[it] = 1;
+      mochila.insert_element(it, items[it].value, items[it].wheight);
     }
   }
 }
@@ -254,7 +230,7 @@ int ILS(int itConstr, int itILS){
     int LucroMax = mochila.lucro;
     for(int i = 0; i < itILS; i++){
         Mochila nova = mochila;
-        Pertubation(nova, 10);
+        Pertubation(nova);
         localSearch(nova);
         LucroMax = max(LucroMax, nova.lucro);
         mochila = CriterioAceitacao(mochila, nova);

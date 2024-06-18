@@ -192,9 +192,9 @@ int main(int argc, char **argv){
     string name = "./dckp_instances/" + TamInst + "/";
     string instB = "dckp_", instE = "_sum.txt";
     srand (time(NULL));
-    const int MaxTabuSize = 1000;
+    const int MaxTabuSize = 10000;
 
-    for(int i = 1; i <= 10; i++){
+    for(int i = 1; i <= 1; i++){
 
         string arq_inp = name + instB + to_string(i) + instE;
         string arq_out = "./results/Tabu/" + TamInst + "/dckp_" + to_string(i) + "_result.txt"; 
@@ -210,10 +210,11 @@ int main(int argc, char **argv){
         vector<double> solucoes, tempos;
         for(int i = 0; i < 30; i++){
             auto start = std::chrono::high_resolution_clock::now();
-            int sol = Tabu(100, MaxTabuSize, 1000);
+            int sol = Tabu(100000, MaxTabuSize, 10000);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed = end - start;
             double execution_time = elapsed.count();
+            cout << execution_time << "\n";
             solucoes.push_back(sol);
             tempos.push_back(execution_time);
             printf("Iretation %d\n", i);

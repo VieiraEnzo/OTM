@@ -18,3 +18,10 @@ Média das Soluções: 2129.07
 Coeficiente de Variação das Soluções: 1.5513%
 Média dos Tempos: 0.144578
 Coeficiente de Variação dos Tempos: 1.60092%
+
+itConstrutivo = 1000 itILS = 200 pertubation = 10 
+Melhor Solução: 2131
+Média das Soluções: 2049.83
+Coeficiente de Variação das Soluções: 1.27221%
+Média dos Tempos: 0.121719
+Coeficiente de Variação dos Tempos: 3.53197%
